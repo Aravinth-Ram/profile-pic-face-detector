@@ -1,0 +1,44 @@
+/* ResultPage styles */
+.result-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  text-align: center;
+}
+.result-container h2 {
+  margin-bottom: 1.5rem;
+}
+.face-img {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #007bff;
+  margin-top: 1rem;
+}
+.error {
+  color: #d32f2f;
+  margin-top: 1rem;
+}
+.back-btn {
+  margin-top: 1.5rem;
+  padding: 0.5rem 1.5rem;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.back-btn:hover {
+  background: #0056b3;
+}
+.button-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
