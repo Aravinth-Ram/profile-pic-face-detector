@@ -18,7 +18,7 @@
   height: 220px;
   object-fit: cover;
   border-radius: 50%;
-  border: 3px solid #007bff;
+  border: 3px solid #222;
   margin-top: 1rem;
 }
 .error {
@@ -27,17 +27,21 @@
 }
 .back-btn {
   margin-top: 1.5rem;
-  padding: 0.5rem 1.5rem;
-  background: #007bff;
+  padding: 0.7rem 1.5rem;
+  background: #222;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
+  font-weight: 600;
   transition: background 0.2s;
+  outline: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  display: inline-block;
 }
-.back-btn:hover {
-  background: #0056b3;
+.back-btn:focus, .back-btn:hover {
+  background: #444;
 }
 .button-row {
   display: flex;

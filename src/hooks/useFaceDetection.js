@@ -61,5 +61,51 @@ export function useFaceDetection(setFaceData, navigate) {
     setLoading(false);
   };
 
-  return { error, loading, handleFileChange };
+  // New: handle camera capture (dataUrl)
+  const handleCameraCapture = async (dataUrl) => {
+    setError("");
+    setLoading(true);
+    try {
+      // Convert dataUrl to Image
+      const img = await loadImage(await (await fetch(dataUrl)).blob());
+      const dimValidation = validateImageDimensions(img);
+      if (!dimValidation.valid) {
+        setError(dimValidation.error);
+        setLoading(false);
+        return;
+      }
+      if (dimValidation.warning) {
+        setError(dimValidation.warning);
+      }
+      const faceapi = await getFaceApi();
+      const detections = await faceapi.detectAllFaces(img);
+      if (detections.length === 0) {
+        setError("No human face detected.");
+        setLoading(false);
+        return;
+      }
+      if (detections.length > 1) {
+        setError(
+          "Multiple faces detected. Please upload a photo with only one face."
+        );
+        setLoading(false);
+        return;
+      }
+      const { box } = detections[0];
+      const isBlurry = await checkBlur(img, box);
+      if (isBlurry) {
+        setError("Image is not clear enough. Please upload a clearer photo.");
+        setLoading(false);
+        return;
+      }
+      const croppedFace = cropFaceInImage(img, box);
+      setFaceData(croppedFace);
+      navigate("/result");
+    } catch {
+      setError("Face detection failed. Try another image.");
+    }
+    setLoading(false);
+  };
+
+  return { error, loading, handleFileChange, handleCameraCapture };
 }
