@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import "./UploadPage.css";
 
 const CameraModal = ({ onCapture, onClose, loading }) => {
@@ -16,16 +16,22 @@ const CameraModal = ({ onCapture, onClose, loading }) => {
       }
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => {
-          if (track.readyState === "live") {
-            track.stop();
-            track.enabled = false;
+          try {
+            if (track.readyState === "live") {
+              track.stop();
+              track.enabled = false;
+            }
+          } catch (err) {
+            setCameraError(
+              "Error stopping camera track: " + (err?.message || err)
+            );
           }
         });
         streamRef.current = null;
       }
       if (window.gc) window.gc();
     } catch (error) {
-      // eslint-disable-next-line
+      setCameraError("Error in stopCamera: " + (error?.message || error));
     }
   }, []);
 
@@ -51,31 +57,49 @@ const CameraModal = ({ onCapture, onClose, loading }) => {
       }
       setIsInitializing(false);
     } catch (error) {
-      setCameraError(error.message);
+      let message = "Unable to access camera.";
+      if (error && error.name === "NotAllowedError") {
+        message = "Camera access was denied. Please allow camera permissions.";
+      } else if (error && error.name === "NotFoundError") {
+        message = "No camera device found.";
+      } else if (error && error.name === "NotReadableError") {
+        message = "Camera is already in use by another application.";
+      } else if (error && error.message) {
+        message = error.message;
+      }
+      setCameraError(message);
       setIsInitializing(false);
-      setTimeout(() => onClose(), 2000);
+      setTimeout(() => onClose(), 2500);
     }
   }, [stopCamera, onClose]);
 
-  React.useEffect(() => {
-    startCamera();
+  useEffect(() => {
+    try {
+      startCamera();
+    } catch (error) {
+      setCameraError("Error starting camera: " + (error?.message || error));
+    }
     return () => {
-      stopCamera();
-      setTimeout(() => {
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach((track) => {
-            if (track.readyState === "live") track.stop();
-          });
-          streamRef.current = null;
-        }
-      }, 100);
+      try {
+        stopCamera();
+      } catch (error) {
+        setCameraError(
+          "Error during camera cleanup: " + (error?.message || error)
+        );
+      }
     };
   }, [startCamera, stopCamera]);
 
   const handleCapture = useCallback(() => {
-    if (!videoRef.current || !streamRef.current) return;
+    if (!videoRef.current || !streamRef.current) {
+      setCameraError("Camera not ready. Please retry.");
+      return;
+    }
     const video = videoRef.current;
-    if (video.readyState < 2) return;
+    if (video.readyState < 2) {
+      setCameraError("Camera is still initializing. Please wait.");
+      return;
+    }
     try {
       const canvas = document.createElement("canvas");
       canvas.width = video.videoWidth;
@@ -85,13 +109,20 @@ const CameraModal = ({ onCapture, onClose, loading }) => {
       const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
       setTimeout(() => onCapture(dataUrl), 0);
     } catch (error) {
-      setCameraError("Failed to capture photo");
+      setCameraError("Failed to capture photo. " + (error?.message || error));
     }
   }, [onCapture]);
 
   const handleCancel = useCallback(() => {
+    try {
+      stopCamera();
+    } catch (error) {
+      setCameraError(
+        "Error stopping camera on cancel: " + (error?.message || error)
+      );
+    }
     setTimeout(() => onClose(), 0);
-  }, [onClose]);
+  }, [stopCamera, onClose]);
 
   const handleRetry = useCallback(() => {
     setCameraError(null);

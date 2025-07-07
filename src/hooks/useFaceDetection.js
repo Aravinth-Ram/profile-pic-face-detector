@@ -13,14 +13,14 @@ export function useFaceDetection(setFaceData, navigate) {
   const handleFileChange = async (e) => {
     setError("");
     setLoading(true);
-    const file = e.target.files[0];
-    const fileValidation = validateFileTypeAndSize(file);
-    if (!fileValidation.valid) {
-      setError(fileValidation.error);
-      setLoading(false);
-      return;
-    }
     try {
+      const file = e.target.files[0];
+      const fileValidation = validateFileTypeAndSize(file);
+      if (!fileValidation.valid) {
+        setError(fileValidation.error);
+        setLoading(false);
+        return;
+      }
       const img = await loadImage(file);
       const dimValidation = validateImageDimensions(img);
       if (!dimValidation.valid) {
@@ -55,8 +55,8 @@ export function useFaceDetection(setFaceData, navigate) {
       const croppedFace = cropFaceInImage(img, box);
       setFaceData(croppedFace);
       navigate("/result");
-    } catch {
-      setError("Face detection failed. Try another image.");
+    } catch (error) {
+      setError("Face detection failed: " + (error?.message || error));
     }
     setLoading(false);
   };
@@ -101,8 +101,8 @@ export function useFaceDetection(setFaceData, navigate) {
       const croppedFace = cropFaceInImage(img, box);
       setFaceData(croppedFace);
       navigate("/result");
-    } catch {
-      setError("Face detection failed. Try another image.");
+    } catch (error) {
+      setError("Face detection failed: " + (error?.message || error));
     }
     setLoading(false);
   };
