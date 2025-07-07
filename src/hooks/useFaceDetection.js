@@ -55,7 +55,6 @@ export function useFaceDetection(setFaceData, navigate) {
     setLoading(false);
   };
 
-  // New: handle camera capture (dataUrl)
   const handleCameraCapture = async (dataUrl) => {
     setError("");
     setLoading(true);
