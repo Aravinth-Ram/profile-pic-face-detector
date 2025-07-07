@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loadImage, cropFaceInImage, checkBlur } from "../utils/imageHelpers";
+import { loadImage, cropFaceInImage } from "../utils/imageHelpers";
 import {
   validateFileTypeAndSize,
   validateImageDimensions,
@@ -46,12 +46,6 @@ export function useFaceDetection(setFaceData, navigate) {
         return;
       }
       const { box } = detections[0];
-      const isBlurry = await checkBlur(img, box);
-      if (isBlurry) {
-        setError("Image is not clear enough. Please upload a clearer photo.");
-        setLoading(false);
-        return;
-      }
       const croppedFace = cropFaceInImage(img, box);
       setFaceData(croppedFace);
       navigate("/result");
@@ -92,12 +86,6 @@ export function useFaceDetection(setFaceData, navigate) {
         return;
       }
       const { box } = detections[0];
-      const isBlurry = await checkBlur(img, box);
-      if (isBlurry) {
-        setError("Image is not clear enough. Please upload a clearer photo.");
-        setLoading(false);
-        return;
-      }
       const croppedFace = cropFaceInImage(img, box);
       setFaceData(croppedFace);
       navigate("/result");
