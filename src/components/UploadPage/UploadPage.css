@@ -8,13 +8,80 @@
   box-shadow: 0 2px 16px rgba(0,0,0,0.08);
   text-align: center;
   color: #222;
+  position: relative;
 }
 .upload-container h2 {
   margin-bottom: 1.5rem;
   color: #222;
 }
-.upload-container input[type="file"] {
+.upload-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.camera-btn {
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 0;
+  transition: background 0.2s;
+  font-weight: 600;
+  outline: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  display: inline-block;
+}
+.camera-btn:focus, .camera-btn:hover {
+  background: #444;
+}
+.camera-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+.camera-btn.cancel {
+  background: #888;
+}
+.camera-btn.cancel:hover:not(:disabled) {
+  background: #666;
+}
+.camera-modal-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+.camera-modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  padding: 1.5rem 1rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 360px;
+}
+.camera-preview {
+  width: 100%;
+  max-width: 320px;
+  border-radius: 8px;
   margin-bottom: 1rem;
+  background: #000;
+}
+.camera-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+.upload-container input[type="file"] {
+  display: none;
 }
 .loading {
   color: #007bff;
@@ -23,4 +90,36 @@
 .error {
   color: #d32f2f;
   margin-top: 1rem;
+}
+
+/* Camera error and loading states */
+.camera-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 200px;
+}
+
+.camera-error p {
+  color: #d32f2f;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+
+.camera-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 200px;
+}
+
+.camera-loading p {
+  color: #666;
+  font-size: 1rem;
 }

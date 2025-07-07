@@ -1,4 +1,3 @@
-// src/config/uploadConfig.js
 export const MAX_FILE_SIZE_MB = 5;
 export const ACCEPTED_TYPES = ["image/jpeg", "image/png"];
 export const MIN_WIDTH = 200;
